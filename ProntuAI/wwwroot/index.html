@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ProntuAI - Demo</title>
+</head>
+<body>
+  <h1>ProntuAI - Upload de Áudio (MVP Demo)</h1>
+
+  <input type="file" id="fileInput" accept="audio/*,text/*" />
+  <button id="uploadBtn">Enviar</button>
+
+  <h2>Transcrição</h2>
+  <pre id="transcript"></pre>
+
+  <h2>SOAP Gerado</h2>
+  <pre id="soap"></pre>
+
+  <script>
+    const uploadBtn = document.getElementById('uploadBtn');
+    const fileInput = document.getElementById('fileInput');
+    const transcriptEl = document.getElementById('transcript');
+    const soapEl = document.getElementById('soap');
+
+    uploadBtn.addEventListener('click', async () => {
+      const file = fileInput.files[0];
+      if (!file) return alert('Selecione um arquivo');
+
+      const form = new FormData();
+      form.append('file', file);
+
+      const resp = await fetch('/api/transcription/upload', { method: 'POST', body: form });
+      const json = await resp.json();
+      transcriptEl.textContent = json.transcript || '';
+
+      // Gerar SOAP
+      const gen = await fetch('/api/transcription/generate-soap', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ transcript: json.transcript })
+      });
+
+      const soap = await gen.json();
+      soapEl.textContent = JSON.stringify(soap, null, 2);
+    });
+  </script>
+</body>
+</html>
