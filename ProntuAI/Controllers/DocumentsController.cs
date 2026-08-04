@@ -31,8 +31,24 @@ namespace ProntuAI.Controllers
             }
             else
             {
-                // For non-text files, store a placeholder to be replaced by real PDF parsing later
-                content = $"Documento: {file.FileName} (conteúdo não extraído no MVP).";
+                // Try to parse PDF content when possible
+                try
+                {
+                    ms.Position = 0;
+                    using var pdfDoc = UglyToad.PdfPig.PdfDocument.Open(ms);
+                    var txt = new System.Text.StringBuilder();
+                    foreach (var page in pdfDoc.GetPages())
+                    {
+                        txt.AppendLine(page.Text);
+                    }
+                    content = txt.ToString();
+                    if (string.IsNullOrWhiteSpace(content))
+                        content = $"Documento: {file.FileName} (conteúdo não extraído).";
+                }
+                catch
+                {
+                    content = $"Documento: {file.FileName} (conteúdo não extraído).";
+                }
             }
 
             var id = Guid.NewGuid().ToString();
