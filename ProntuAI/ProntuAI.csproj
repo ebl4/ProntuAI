@@ -14,14 +14,14 @@
   <ItemGroup>
     <!-- EF Core + PostgreSQL -->
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.17" />
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.5" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.17" />
 
     <!-- Authentication -->
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.17" />
+    <PackageReference Include="PdfPig" Version="0.1.15" />
 
     <!-- PDF parsing -->
-    <PackageReference Include="UglyToad.PdfPig" Version="0.1.9" />
 
     <!-- Optional: HTTP client helpers -->
     <PackageReference Include="Polly" Version="8.2.1" />
