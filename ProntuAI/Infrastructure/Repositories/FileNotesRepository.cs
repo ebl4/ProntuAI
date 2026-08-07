@@ -1,7 +1,8 @@
 using System.Text.Json;
 using ProntuAI.Models;
+using ProntuAI.Services;
 
-namespace ProntuAI.Services
+namespace ProntuAI.Infrastructure.Repositories
 {
     public class FileNotesRepository : INotesRepository
     {

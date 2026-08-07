@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Net.Http.Json;
 using System.Text.Json;
-using System.Threading.Tasks;
 using ProntuAI.Models;
 
 namespace ProntuAI.Services
@@ -29,12 +24,26 @@ namespace ProntuAI.Services
 
             var prompt = BuildPrompt(transcript, knowledgeIds);
 
-            var reqObj = new { prompt };
+            var reqObj = new
+            {
+                contents = new[]
+                {
+                    new
+                    {
+                        parts = new[]
+                        {
+                            new { text = prompt }
+                        }
+                    }
+                }
+            };
+
             using var req = new HttpRequestMessage(HttpMethod.Post, _endpoint)
             {
                 Content = JsonContent.Create(reqObj)
             };
-            req.Headers.Add("Authorization", $"Bearer {_apiKey}");
+
+            req.Headers.Add("X-goog-api-key", _apiKey);
 
             var resp = await _http.SendAsync(req);
             resp.EnsureSuccessStatusCode();
@@ -46,10 +55,43 @@ namespace ProntuAI.Services
             {
                 var doc = JsonDocument.Parse(body);
                 var root = doc.RootElement;
-                // If the model wrapped JSON in text, attempt to find a JSON substring
-                if (root.ValueKind == JsonValueKind.Object && root.TryGetProperty("content", out var content))
+                // Gemini may return { "candidates": [ { "content": { "parts": [ { "text": "..." } ] } } ] }
+                if (root.ValueKind == JsonValueKind.Object)
                 {
-                    return ParseSoapJson(content.GetString() ?? string.Empty);
+                    if (root.TryGetProperty("candidates", out var candidates) && candidates.ValueKind == JsonValueKind.Array && candidates.GetArrayLength() > 0)
+                    {
+                        var first = candidates[0];
+                        if (first.ValueKind == JsonValueKind.Object && first.TryGetProperty("content", out var contentObj))
+                        {
+                            // content.parts[*].text
+                            if (contentObj.ValueKind == JsonValueKind.Object && contentObj.TryGetProperty("parts", out var parts) && parts.ValueKind == JsonValueKind.Array)
+                            {
+                                var sb = new System.Text.StringBuilder();
+                                foreach (var part in parts.EnumerateArray())
+                                {
+                                    if (part.ValueKind == JsonValueKind.Object && part.TryGetProperty("text", out var txt) && txt.ValueKind == JsonValueKind.String)
+                                    {
+                                        sb.Append(txt.GetString());
+                                    }
+                                }
+                                var combined = sb.ToString();
+                                if (!string.IsNullOrEmpty(combined)) return ParseSoapJson(combined);
+                            }
+
+                            // fallback: content could be string
+                            if (contentObj.ValueKind == JsonValueKind.String)
+                            {
+                                var contentStr = contentObj.GetString();
+                                if (!string.IsNullOrEmpty(contentStr)) return ParseSoapJson(contentStr);
+                            }
+                        }
+                    }
+
+                    // If the model wrapped JSON in content at root level
+                    if (root.TryGetProperty("content", out var content))
+                    {
+                        if (content.ValueKind == JsonValueKind.String) return ParseSoapJson(content.GetString() ?? string.Empty);
+                    }
                 }
 
                 return ParseSoapJson(body);

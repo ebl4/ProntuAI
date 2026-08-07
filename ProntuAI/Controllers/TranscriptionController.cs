@@ -22,6 +22,8 @@ namespace ProntuAI.Controllers
         }
 
         [HttpPost("upload")]
+        [RequestSizeLimit(524288000)]
+        [RequestFormLimits(MultipartBodyLengthLimit = 524288000)]
         public async Task<IActionResult> UploadAudio([FromForm] IFormFile file)
         {
             if (file == null) return BadRequest("Arquivo não enviado.");
@@ -77,7 +79,9 @@ namespace ProntuAI.Controllers
 
     public class SaveNoteRequest
     {
-        public ProntuAI.Models.SoapNote? Note { get; set; }
+        private SoapNote? note;
+
+        public SoapNote? Note { get => note; set => note = value; }
         public string? Transcript { get; set; }
     }
 }

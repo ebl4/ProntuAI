@@ -2,8 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using ProntuAI.Data;
 using ProntuAI.Entities;
 using ProntuAI.Models;
+using ProntuAI.Services;
 
-namespace ProntuAI.Services
+namespace ProntuAI.Infrastructure.Repositories
 {
     public class EFNotesRepository : INotesRepository
     {
