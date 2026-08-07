@@ -1,11 +1,8 @@
-using System;
-using System.IO;
-using System.Net.Http;
+using ProntuAI.Services.Mock;
 using System.Net.Http.Headers;
 using System.Text.Json;
-using System.Threading.Tasks;
 
-namespace ProntuAI.Services
+namespace ProntuAI.Services.Impl
 {
     // Minimal Azure Speech-to-Text implementation using REST API.
     // Requires AZURE_SPEECH_KEY and AZURE_SPEECH_REGION environment variables.

@@ -1,7 +1,7 @@
 using System.Text.Json;
 using ProntuAI.Models;
 
-namespace ProntuAI.Services
+namespace ProntuAI.Services.Impl
 {
     // Minimal Gemini client wrapper - expects GEMINI_API_KEY and GEMINI_ENDPOINT env vars.
     public class GeminiLlmService : ILlmService

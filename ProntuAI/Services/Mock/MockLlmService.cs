@@ -1,11 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using ProntuAI.Models;
 
-namespace ProntuAI.Services
+namespace ProntuAI.Services.Mock
 {
     // Mock LLM service that generates a basic SOAP note from a transcript.
     public class MockLlmService : ILlmService

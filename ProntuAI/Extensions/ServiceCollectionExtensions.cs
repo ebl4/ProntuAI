@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using ProntuAI.Services;
+using ProntuAI.Services.Impl;
+using ProntuAI.Services.Mock;
 
 namespace ProntuAI.Extensions
 {
@@ -37,13 +39,13 @@ namespace ProntuAI.Extensions
             var pgConn = Environment.GetEnvironmentVariable("PRONTUAI_DB_CONNECTION");
             if (!string.IsNullOrEmpty(pgConn))
             {
-                services.AddDbContext<ProntuAI.Data.ApplicationDbContext>(opt => opt.UseNpgsql(pgConn));
-                services.AddIdentityCore<Microsoft.AspNetCore.Identity.IdentityUser>().AddEntityFrameworkStores<ProntuAI.Data.ApplicationDbContext>();
-                services.AddScoped<INotesRepository, ProntuAI.Infrastructure.Repositories.EFNotesRepository>();
+                services.AddDbContext<Data.ApplicationDbContext>(opt => opt.UseNpgsql(pgConn));
+                services.AddIdentityCore<Microsoft.AspNetCore.Identity.IdentityUser>().AddEntityFrameworkStores<Data.ApplicationDbContext>();
+                services.AddScoped<INotesRepository, Infrastructure.Repositories.EFNotesRepository>();
             }
             else
             {
-                services.AddSingleton<INotesRepository, ProntuAI.Infrastructure.Repositories.FileNotesRepository>();
+                services.AddSingleton<INotesRepository, Infrastructure.Repositories.FileNotesRepository>();
             }
 
             // Vector store

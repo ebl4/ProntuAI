@@ -1,9 +1,6 @@
 using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace ProntuAI.Services
+namespace ProntuAI.Services.Impl
 {
     // Very simple in-memory 'vector store' for MVP that stores documents and performs naive text matching.
     public class InMemoryVectorStore : IVectorStore
@@ -25,7 +22,7 @@ namespace ProntuAI.Services
             var scores = _docs.Select(kv => new
             {
                 Id = kv.Key,
-                Score = terms.Sum(t => kv.Value.Contains(t, System.StringComparison.OrdinalIgnoreCase) ? 1 : 0)
+                Score = terms.Sum(t => kv.Value.Contains(t, StringComparison.OrdinalIgnoreCase) ? 1 : 0)
             })
             .Where(x => x.Score > 0)
             .OrderByDescending(x => x.Score)

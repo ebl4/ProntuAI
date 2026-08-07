@@ -1,8 +1,6 @@
-using System.IO;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace ProntuAI.Services
+namespace ProntuAI.Services.Mock
 {
     // Mock implementation for development. Replace with real provider (Whisper/Azure) later.
     public class MockTranscriptionService : ITranscriptionService

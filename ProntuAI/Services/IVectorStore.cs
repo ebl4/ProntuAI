@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
-
 namespace ProntuAI.Services
 {
     // Minimal vector store abstraction for future RAG implementation.

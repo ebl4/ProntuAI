@@ -1,0 +1,8 @@
+A API REST de fala curta que você está usando (/cognitiveservices/v1) possui um limite estrito de 60 segundos de duração ou até 15 MB de 
+tamanho por requisição. Quando se tenta enviar 190 MB, a Azure corta a conexão abruptamente após um segundo.
+
+Para arquivos grandes (como podcasts, reuniões ou vídeos longos de até 1 GB), a Azure exige o uso da API v3.0 / v3.1 / v3.2. 
+Ela funciona de forma assíncrona: você envia o arquivo, a Azure processa em segundo plano e você baixa o JSON com o texto depois.
+
+Geralmente, para arquivos grandes nessa API, você precisa primeiro subir o áudio em um Storage 
+(como Azure Blob Storage ou AWS S3) e enviar apenas a URL gerada no corpo do JSON.
